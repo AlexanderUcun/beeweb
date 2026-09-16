@@ -1,8 +1,6 @@
 /**
- * CONFIGURACIÓN MAESTRA DEL CLIENTE (MASTER STARTER KIT)
- * 
- * Modifica los datos de este archivo para adaptar toda la página web
- * al negocio de un nuevo cliente en menos de 2 minutos.
+ * CONFIGURACIÓN OFICIAL DE beeWeb
+ * Apicultura & Productos Naturales de Tocancipá, Cundinamarca
  */
 
 export interface ClientConfig {
@@ -41,34 +39,33 @@ export interface ClientConfig {
 }
 
 export const CURRENT_CLIENT_CONFIG: ClientConfig = {
-  companyName: 'StitchCraft Studio',
-  brandTagline: 'Páginas Web Impactantes diseñadas para Escalar tu Empresa',
-  nicheCategory: 'Agencia de Diseño & Desarrollo Web',
+  companyName: 'beeWeb',
+  brandTagline: 'Productos puros de apicultivos directo a tu hogar',
+  nicheCategory: 'Apicultura y Productos Naturales',
   logo: {
-    text: 'Stitch',
-    subtext: 'Craft',
-    accentColor: 'indigo',
+    text: 'bee',
+    subtext: 'Web',
+    accentColor: '#D98F07',
   },
   contact: {
-    email: 'contacto@stitchcraft-studio.com',
-    phone: '+57 300 123 4567',
-    whatsapp: '573001234567',
-    address: 'Bogotá, Colombia',
+    email: 'contacto@beeweb.com',
+    phone: '+57 310 528 1302',
+    whatsapp: '573105281302',
+    address: 'Cra 8 # 12-53, Tocancipá, Colombia',
   },
   social: {
-    twitter: 'https://twitter.com',
-    linkedin: 'https://linkedin.com',
-    instagram: 'https://instagram.com',
+    instagram: 'https://instagram.com/beeweb_col',
+    facebook: 'https://facebook.com/beewebcolombia',
   },
   payments: {
-    nequiNumber: '300 123 4567',
-    daviplataNumber: '315 987 6543',
-    bancolombiaAccount: 'Ahorros # 123-456789-00',
-    currency: 'USD',
+    nequiNumber: '3105281302',
+    daviplataNumber: '3105281302',
+    bancolombiaAccount: 'Ahorros Bancolombia # 310-528130-02',
+    currency: 'COP',
   },
   features: {
     enableSmartCheckout: true,
     enableDarkModeToggle: true,
-    enableQuoteModal: true,
+    enableQuoteModal: false,
   },
 };

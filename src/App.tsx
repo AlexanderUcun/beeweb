@@ -72,7 +72,6 @@ export function App() {
       <main>
         <Hero
           onExploreClick={scrollToShowcase}
-          onOpenQuoteModal={() => handleOpenQuoteModal()}
         />
 
         <ShowcaseGrid
