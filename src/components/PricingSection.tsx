@@ -1,102 +1,75 @@
-import React, { useState } from 'react';
-import { Check, Sparkles } from 'lucide-react';
+import React from 'react';
+import { Check, Sparkles, ShoppingBag } from 'lucide-react';
+import { CURRENT_CLIENT_CONFIG } from '../config/clientConfig';
 
 interface PricingSectionProps {
   onOpenQuoteModal: (packageName?: string) => void;
   onOpenCheckout?: (planName: string, price: string) => void;
 }
 
-export const PricingSection: React.FC<PricingSectionProps> = ({ onOpenQuoteModal, onOpenCheckout }) => {
-  const [billingCycle, setBillingCycle] = useState<'one-time' | 'managed'>('one-time');
+export const PricingSection: React.FC<PricingSectionProps> = ({ onOpenCheckout }) => {
+  const { whatsapp } = CURRENT_CLIENT_CONFIG.contact;
 
   const plans = [
     {
-      name: 'Landing Page Rápida',
-      tagline: 'Ideal para startups, lanzamientos o promociones puntuales.',
-      priceOneTime: '$199',
-      priceManaged: '$29 /mes',
+      name: 'Combo Salud Personal',
+      tagline: 'Ideal para incorporar energía pura y defensas en tu rutina diaria.',
+      price: '$55.000',
       badge: '',
       popular: false,
       features: [
-        '1 Página Principal de alto impacto',
-        'Adaptación de contenido y marca',
-        'Formulario de contacto a Email / WhatsApp',
-        'Diseño 100% Responsivo Móvil',
-        'Optimización Básica SEO',
-        'Entrega en 48 Horas',
+        '1 Miel Pura Multiflora (500g)',
+        '1 Gotas de Propóleo Concentrado (30ml)',
+        'Cosecha Fresca de Tocancipá',
+        'Empaque de vidrio protegido',
+        'Envío rápido a domicilio',
       ],
     },
     {
-      name: 'Sitio Corporativo Pro',
-      tagline: 'La opción preferida para PyMEs, consultoras y agencias.',
-      priceOneTime: '$399',
-      priceManaged: '$49 /mes',
-      badge: 'Más Elegido',
+      name: 'Kit Familiar Apícola',
+      tagline: 'El paquete más completo para la nutrición y salud de toda la familia.',
+      price: '$85.000',
+      badge: 'Más Vendido 🏆',
       popular: true,
       features: [
-        'Hasta 5 Secciones / Subpáginas',
-        'Catálogo / Showcase de Servicios',
-        'Modo Oscuro & Claro integrado',
-        'SEO Avanzado + Integración Google Maps',
-        'Formulario de Cotización personalizado',
-        'Soporte Técnico por 6 meses',
+        '1 Miel Pura Multiflora (500g)',
+        '1 Polen Orgánico de Apicultivo (250g)',
+        '1 Gotas de Propóleo Concentrado (30ml)',
+        '1 Caja Regalo de Madera de Pino',
+        'Ahorro del 15% respecto a individual',
+        'Envío Gratis a Tocancipá',
       ],
     },
     {
-      name: 'Enterprise / E-Commerce',
-      tagline: 'Solución a medida para comercios, plataformas y firmas grandes.',
-      priceOneTime: '$799',
-      priceManaged: '$99 /mes',
-      badge: 'Completo',
+      name: 'Kit Inmunidad Total + Jalea',
+      tagline: 'Regenerador completo con Jalea Real Fresca para máxima vitalidad.',
+      price: '$130.000',
+      badge: 'Máxima Potencia 👑',
       popular: false,
       features: [
-        'Páginas ilimitadas y E-Commerce completo',
-        'Integración de Pasarela de Pagos (Stripe / MercadoPago)',
-        'Panel de Administración / CMS',
-        'Integración con CRM o Base de Datos',
-        'Optimizaciones de velocidad exclusivas',
-        'Soporte y Mantenimiento VIP 24/7',
+        '1 Jalea Real Fresca 100% Pura (50g)',
+        '1 Miel Pura Multiflora (500g)',
+        '1 Polen Orgánico (250g)',
+        '1 Extracto de Propóleo (30ml)',
+        'Empaque Térmico con Frío Garantizado',
+        'Asesoría de consumo incluida',
       ],
     },
   ];
 
   return (
-    <section id="precios" className="py-24 bg-slate-50/50 dark:bg-slate-900/30 border-t border-slate-200/80 dark:border-slate-800/80">
+    <section id="precios" className="py-24 bg-amber-50/40 dark:bg-slate-900/30 border-t border-amber-200/60 dark:border-slate-800/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto">
-          <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-cyan-400">
-            Transparencia Total
+          <span className="text-xs font-extrabold uppercase tracking-wider text-[#D98F07]">
+            Promociones Especiales de Cosecha
           </span>
-          <h2 className="mt-2 text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Planes & Cotización Estimada
+          <h2 className="mt-2 text-3xl sm:text-4xl font-black text-[#401E01] dark:text-white tracking-tight">
+            Kits & Combos Saludables
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400">
-            Elige la modalidad que mejor se adapte al presupuesto y meta de tu empresa.
+          <p className="mt-4 text-base sm:text-lg text-slate-700 dark:text-slate-400 font-medium">
+            Lleva nuestros mejores productos apícolas combinados con descuento directo.
           </p>
-
-          {/* Billing Cycle Selector */}
-          <div className="mt-8 inline-flex items-center p-1 rounded-2xl bg-slate-200/80 dark:bg-slate-800/80 text-xs font-bold">
-            <button
-              onClick={() => setBillingCycle('one-time')}
-              className={`px-5 py-2.5 rounded-xl transition-all ${
-                billingCycle === 'one-time'
-                  ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-cyan-400 shadow-md'
-                  : 'text-slate-600 dark:text-slate-400'
-              }`}
-            >
-              Pago Único (Propiedad Total)
-            </button>
-            <button
-              onClick={() => setBillingCycle('managed')}
-              className={`px-5 py-2.5 rounded-xl transition-all ${
-                billingCycle === 'managed'
-                  ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-cyan-400 shadow-md'
-                  : 'text-slate-600 dark:text-slate-400'
-              }`}
-            >
-              Suscripción Gestionada (Hosting Incluido)
-            </button>
-          </div>
         </div>
 
         {/* Plans Cards */}
@@ -106,33 +79,33 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onOpenQuoteModal
               key={idx}
               className={`relative rounded-3xl p-8 flex flex-col justify-between transition-all duration-300 ${
                 plan.popular
-                  ? 'bg-white dark:bg-slate-950 border-2 border-indigo-600 dark:border-cyan-400 shadow-2xl shadow-indigo-500/15 scale-105 z-10'
-                  : 'bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-lg'
+                  ? 'bg-white dark:bg-slate-950 border-2 border-[#D98F07] shadow-2xl shadow-amber-500/15 scale-105 z-10'
+                  : 'bg-white dark:bg-slate-900/60 border border-amber-200/80 dark:border-slate-800 shadow-sm hover:shadow-lg'
               }`}
             >
               {plan.badge && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-indigo-600 to-cyan-500 text-white text-xs font-bold uppercase tracking-wider shadow-md">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-[#D98F07] text-white text-xs font-bold uppercase tracking-wider shadow-md">
                   {plan.badge}
                 </div>
               )}
 
               <div>
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-white">{plan.name}</h3>
-                <p className="mt-2 text-xs text-slate-500 dark:text-slate-400 min-h-[32px]">{plan.tagline}</p>
+                <h3 className="text-2xl font-black text-[#401E01] dark:text-white">{plan.name}</h3>
+                <p className="mt-2 text-xs text-slate-600 dark:text-slate-400 min-h-[32px]">{plan.tagline}</p>
 
                 <div className="mt-6 flex items-baseline">
-                  <span className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white">
-                    {billingCycle === 'one-time' ? plan.priceOneTime : plan.priceManaged}
+                  <span className="text-4xl sm:text-5xl font-black text-[#401E01] dark:text-white">
+                    {plan.price}
                   </span>
-                  <span className="ml-2 text-xs text-slate-500 font-medium">
-                    {billingCycle === 'one-time' ? 'pago único USD' : 'facturación mensual'}
+                  <span className="ml-2 text-xs font-bold text-[#D98F07]">
+                    COP
                   </span>
                 </div>
 
                 <div className="mt-8 space-y-3">
                   {plan.features.map((feat, fIdx) => (
-                    <div key={fIdx} className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
-                      <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0">
+                    <div key={fIdx} className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300 font-medium">
+                      <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center flex-shrink-0">
                         <Check className="w-3.5 h-3.5" />
                       </div>
                       <span>{feat}</span>
@@ -144,25 +117,26 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ onOpenQuoteModal
               <div className="mt-10 space-y-2.5">
                 <button
                   onClick={() => {
-                    const price = billingCycle === 'one-time' ? plan.priceOneTime : plan.priceManaged;
-                    if (onOpenCheckout) onOpenCheckout(plan.name, price);
+                    if (onOpenCheckout) onOpenCheckout(plan.name, plan.price);
                   }}
                   className={`w-full py-3.5 px-4 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 ${
                     plan.popular
-                      ? 'text-white bg-gradient-to-r from-emerald-500 via-indigo-600 to-cyan-500 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40'
-                      : 'text-white bg-indigo-600 hover:bg-indigo-700 shadow-md'
+                      ? 'text-white bg-gradient-to-r from-[#D98F07] via-amber-600 to-[#8C4E03] shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40'
+                      : 'text-white bg-[#D98F07] hover:bg-[#8C4E03] shadow-md'
                   }`}
                 >
-                  <Sparkles className="w-4 h-4 text-emerald-200" />
-                  Pagar Instantáneo (Nequi / PSE / Card)
+                  <Sparkles className="w-4 h-4 text-amber-200" />
+                  Pagar por Nequi / PSE / Bancolombia
                 </button>
 
-                <button
-                  onClick={() => onOpenQuoteModal(plan.name)}
-                  className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                <a
+                  href={`https://wa.me/${whatsapp}?text=${encodeURIComponent(`Hola beeWeb! Deseo pedir el ${plan.name} por valor de ${plan.price} COP.`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-[#401E01] dark:text-slate-200 bg-amber-100/70 dark:bg-slate-800 hover:bg-amber-200 transition-colors flex items-center justify-center gap-1.5"
                 >
-                  Solicitar Cotización por WhatsApp / Email
-                </button>
+                  <ShoppingBag className="w-3.5 h-3.5" /> Pedir por WhatsApp
+                </a>
               </div>
             </div>
           ))}
