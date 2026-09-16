@@ -48,8 +48,7 @@ export function App() {
   };
 
   const handleSelectMockupForQuote = (mockup: MockupItem) => {
-    setPreselectedPackage(`Maqueta: ${mockup.title}`);
-    setQuoteModalOpen(true);
+    handleOpenCheckout(mockup.title, mockup.priceCOP);
   };
 
   const scrollToShowcase = () => {
