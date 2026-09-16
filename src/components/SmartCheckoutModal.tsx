@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Smartphone, CreditCard, Building2, CheckCircle2, Copy, Check, ShieldCheck, Zap, ArrowRight, RefreshCw } from 'lucide-react';
+import { X, Smartphone, CreditCard, Building2, CheckCircle2, Copy, Check, ShieldCheck, Zap, ArrowRight, RefreshCw, Truck, MapPin, User, Phone, Mail, Package } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { toast } from 'sonner';
 import { CURRENT_CLIENT_CONFIG } from '../config/clientConfig';
@@ -12,6 +12,35 @@ interface SmartCheckoutModalProps {
 }
 
 type PaymentMethod = 'nequi' | 'daviplata' | 'bancolombia_pse' | 'card';
+type CheckoutStep = 'shipping' | 'select_payment' | 'verifying' | 'success';
+
+const COLOMBIAN_DEPARTMENTS = [
+  'Cundinamarca',
+  'Bogotá D.C.',
+  'Antioquia',
+  'Valle del Cauca',
+  'Santander',
+  'Boyacá',
+  'Atlántico',
+  'Bolívar',
+  'Caldas',
+  'Risaralda',
+  'Quindío',
+  'Tolima',
+  'Huila',
+  'Meta',
+  'Norte de Santander',
+  'Nariño',
+];
+
+const MAIN_CITIES: Record<string, string[]> = {
+  'Cundinamarca': ['Tocancipá', 'Zipaquirá', 'Chía', 'Cajicá', 'Sopó', 'Gachancipá', 'Nemocón', 'Cota', 'Facatativá', 'Mosquera', 'Funza', 'Soacha', 'Girardot', 'Otro Municipio'],
+  'Bogotá D.C.': ['Bogotá D.C.'],
+  'Antioquia': ['Medellín', 'Envigado', 'Itagüí', 'Bello', 'Rionegro', 'Sabaneta', 'Otro Municipio'],
+  'Valle del Cauca': ['Cali', 'Palmira', 'Tuluá', 'Buenaventura', 'Cartago', 'Otro Municipio'],
+  'Santander': ['Bucaramanga', 'Floridablanca', 'Girón', 'Piedecuesta', 'Barrancabermeja', 'Otro Municipio'],
+  'Boyacá': ['Tunja', 'Duitama', 'Sogamoso', 'Villa de Leyva', 'Chiquinquirá', 'Otro Municipio'],
+};
 
 const COLOMBIAN_BANKS = [
   'Bancolombia',
@@ -34,12 +63,25 @@ export const SmartCheckoutModal: React.FC<SmartCheckoutModalProps> = ({
   planName = 'Miel Multiflora Orgánica',
   amount = '$35.000',
 }) => {
+  const [step, setStep] = useState<CheckoutStep>('shipping');
   const [method, setMethod] = useState<PaymentMethod>('nequi');
-  const [step, setStep] = useState<'select' | 'verifying' | 'success'>('select');
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [selectedBank, setSelectedBank] = useState('Bancolombia');
   const [cardData, setCardData] = useState({ number: '', name: '', expiry: '', cvc: '' });
   const [progress, setProgress] = useState(0);
+
+  // Customer & Shipping Form State
+  const [shippingData, setShippingData] = useState({
+    fullName: '',
+    phone: '',
+    email: '',
+    department: 'Cundinamarca',
+    city: 'Tocancipá',
+    customCity: '',
+    address: '',
+    neighborhood: '',
+    notes: '',
+  });
 
   const nequiNumber = CURRENT_CLIENT_CONFIG.payments?.nequiNumber || '3105281302';
   const daviplataNumber = CURRENT_CLIENT_CONFIG.payments?.daviplataNumber || '3105281302';
@@ -55,12 +97,12 @@ export const SmartCheckoutModal: React.FC<SmartCheckoutModalProps> = ({
             clearInterval(timer);
             setStep('success');
             confetti({
-              particleCount: 120,
-              spread: 80,
+              particleCount: 130,
+              spread: 85,
               origin: { y: 0.5 },
             });
-            toast.success('¡Pago Confirmado Instantáneamente!', {
-              description: `Tu orden para ${planName} ha sido procesada con éxito.`,
+            toast.success('¡Pago Confirmado Exitosamente!', {
+              description: `Tu orden para ${planName} ha sido agendada para despacho.`,
             });
             return 100;
           }
@@ -80,15 +122,31 @@ export const SmartCheckoutModal: React.FC<SmartCheckoutModalProps> = ({
     setTimeout(() => setCopiedField(null), 2000);
   };
 
+  const handleShippingSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!shippingData.fullName.trim() || !shippingData.phone.trim() || !shippingData.address.trim()) {
+      toast.error('Por favor completa los campos obligatorios de envío.');
+      return;
+    }
+    setStep('select_payment');
+  };
+
   const handleStartPayment = (e: React.FormEvent) => {
     e.preventDefault();
     setStep('verifying');
   };
 
   const handleReset = () => {
-    setStep('select');
+    setStep('shipping');
     onClose();
   };
+
+  const finalCityName = shippingData.city === 'Otro Municipio' && shippingData.customCity 
+    ? shippingData.customCity 
+    : shippingData.city;
+
+  const isLocalDelivery = shippingData.department === 'Cundinamarca' && ['Tocancipá', 'Zipaquirá', 'Chía', 'Cajicá', 'Sopó', 'Gachancipá'].includes(finalCityName);
+  const estimatedDays = isLocalDelivery ? '1 a 2 días hábiles' : '3 a 5 días hábiles (Nacional)';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/80 backdrop-blur-md animate-fade-in overflow-y-auto">
@@ -97,36 +155,234 @@ export const SmartCheckoutModal: React.FC<SmartCheckoutModalProps> = ({
         {/* Close Button */}
         <button
           onClick={handleReset}
-          className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-amber-100 dark:hover:bg-slate-800 transition-colors"
+          className="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-amber-100 dark:hover:bg-slate-800 transition-colors z-10"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Modal Top Header */}
-        <div className="flex items-center space-x-3 mb-6">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 via-yellow-500 to-amber-600 p-0.5 shadow-md">
+        <div className="flex items-center space-x-3 mb-6 border-b border-amber-100 dark:border-slate-800 pb-4">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 via-yellow-500 to-amber-600 p-0.5 shadow-md flex-shrink-0">
             <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
               <Zap className="w-5 h-5 text-amber-400" />
             </div>
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="text-xl font-extrabold text-[#401E01] dark:text-white">
-                Pago Seguro beeWeb
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h3 className="text-xl font-extrabold text-[#401E01] dark:text-white truncate">
+                Checkout beeWeb
               </h3>
               <span className="px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider rounded-full bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
-                Tocancipá 🐝
+                Apicultura Tocancipá 🐝
               </span>
             </div>
-            <p className="text-xs text-slate-600 dark:text-slate-400">
-              Pago instantáneo para <span className="font-bold text-[#401E01] dark:text-white">{planName}</span> ({amount})
+            <p className="text-xs text-slate-600 dark:text-slate-400 truncate">
+              Producto: <span className="font-bold text-[#401E01] dark:text-white">{planName}</span> ({amount})
             </p>
           </div>
         </div>
 
-        {/* Step 1: Payment Method Selection */}
-        {step === 'select' && (
+        {/* Step Indicator Bar */}
+        <div className="mb-6 flex items-center justify-between text-xs font-bold text-slate-500">
+          <div className={`flex items-center gap-1.5 ${step === 'shipping' ? 'text-[#D98F07]' : 'text-emerald-600'}`}>
+            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${step === 'shipping' ? 'bg-[#D98F07] text-white' : 'bg-emerald-600 text-white'}`}>1</span>
+            <span>Datos de Envío</span>
+          </div>
+          <div className="w-8 h-0.5 bg-slate-200 dark:bg-slate-800" />
+          <div className={`flex items-center gap-1.5 ${step === 'select_payment' ? 'text-[#D98F07]' : step === 'success' || step === 'verifying' ? 'text-emerald-600' : 'text-slate-400'}`}>
+            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${step === 'select_payment' ? 'bg-[#D98F07] text-white' : step === 'success' || step === 'verifying' ? 'bg-emerald-600 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-500'}`}>2</span>
+            <span>Método de Pago</span>
+          </div>
+          <div className="w-8 h-0.5 bg-slate-200 dark:bg-slate-800" />
+          <div className={`flex items-center gap-1.5 ${step === 'success' ? 'text-emerald-600' : 'text-slate-400'}`}>
+            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${step === 'success' ? 'bg-emerald-600 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-500'}`}>3</span>
+            <span>Confirmación</span>
+          </div>
+        </div>
+
+        {/* STEP 1: SHIPPING DETAILS */}
+        {step === 'shipping' && (
+          <form onSubmit={handleShippingSubmit} className="space-y-4">
+            <div className="bg-amber-50/60 dark:bg-slate-950 p-3.5 rounded-2xl border border-amber-200/80 dark:border-slate-800 flex items-center gap-3 text-xs text-slate-700 dark:text-slate-300">
+              <Truck className="w-5 h-5 text-[#D98F07] flex-shrink-0" />
+              <div>
+                <span className="font-bold text-[#401E01] dark:text-amber-400">Envíos Nacionales & Locales:</span>
+                <span className="ml-1">Servientrega, Interrapidísimo, Coordinadora y Domicilio Directo.</span>
+                <div className="font-semibold text-amber-700 dark:text-amber-300 mt-0.5">
+                  ⏱️ Tiempo estimado de entrega: <span className="underline">{estimatedDays}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1">
+                  <User className="w-3.5 h-3.5 text-[#D98F07]" /> Nombre Completo *
+                </label>
+                <input
+                  type="text"
+                  required
+                  autoComplete="shipping name"
+                  value={shippingData.fullName}
+                  onChange={(e) => setShippingData({ ...shippingData, fullName: e.target.value })}
+                  placeholder="Ej. Juan Pérez"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-amber-200 dark:border-slate-800 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D98F07]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1">
+                  <Phone className="w-3.5 h-3.5 text-[#D98F07]" /> Teléfono / WhatsApp *
+                </label>
+                <input
+                  type="tel"
+                  required
+                  autoComplete="shipping tel"
+                  value={shippingData.phone}
+                  onChange={(e) => setShippingData({ ...shippingData, phone: e.target.value })}
+                  placeholder="310 123 4567"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-amber-200 dark:border-slate-800 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D98F07]"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1">
+                  <MapPin className="w-3.5 h-3.5 text-[#D98F07]" /> Departamento *
+                </label>
+                <select
+                  value={shippingData.department}
+                  onChange={(e) => {
+                    const dept = e.target.value;
+                    const defaultCity = MAIN_CITIES[dept] ? MAIN_CITIES[dept][0] : 'Municipio Principal';
+                    setShippingData({ ...shippingData, department: dept, city: defaultCity });
+                  }}
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-amber-200 dark:border-slate-800 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D98F07]"
+                >
+                  {COLOMBIAN_DEPARTMENTS.map((dept) => (
+                    <option key={dept} value={dept}>{dept}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1">
+                  <Building2 className="w-3.5 h-3.5 text-[#D98F07]" /> Municipio / Ciudad *
+                </label>
+                <select
+                  value={shippingData.city}
+                  onChange={(e) => setShippingData({ ...shippingData, city: e.target.value })}
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-amber-200 dark:border-slate-800 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D98F07]"
+                >
+                  {(MAIN_CITIES[shippingData.department] || ['Municipio Principal', 'Otro Municipio']).map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {shippingData.city === 'Otro Municipio' && (
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Escribe el Nombre del Municipio / Vereda *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={shippingData.customCity}
+                  onChange={(e) => setShippingData({ ...shippingData, customCity: e.target.value })}
+                  placeholder="Ej. Sesquilé / Guatavita / Vereda Centro"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-amber-200 dark:border-slate-800 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D98F07]"
+                />
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1">
+                  <MapPin className="w-3.5 h-3.5 text-[#D98F07]" /> Dirección de Entrega *
+                </label>
+                <input
+                  type="text"
+                  required
+                  autoComplete="shipping address-line1"
+                  value={shippingData.address}
+                  onChange={(e) => setShippingData({ ...shippingData, address: e.target.value })}
+                  placeholder="Ej. Cra 8 # 12-53, Apto 201"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-amber-200 dark:border-slate-800 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D98F07]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1">
+                  <Package className="w-3.5 h-3.5 text-[#D98F07]" /> Barrio / Vereda / Sector
+                </label>
+                <input
+                  type="text"
+                  value={shippingData.neighborhood}
+                  onChange={(e) => setShippingData({ ...shippingData, neighborhood: e.target.value })}
+                  placeholder="Ej. Barrio El Centro / Vereda Canavita"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-amber-200 dark:border-slate-800 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D98F07]"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1">
+                  <Mail className="w-3.5 h-3.5 text-[#D98F07]" /> Correo Electrónico (para recibo)
+                </label>
+                <input
+                  type="email"
+                  autoComplete="shipping email"
+                  value={shippingData.email}
+                  onChange={(e) => setShippingData({ ...shippingData, email: e.target.value })}
+                  placeholder="correo@ejemplo.com"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-amber-200 dark:border-slate-800 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D98F07]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Indicaciones para el Repartidor
+                </label>
+                <input
+                  type="text"
+                  value={shippingData.notes}
+                  onChange={(e) => setShippingData({ ...shippingData, notes: e.target.value })}
+                  placeholder="Ej. Dejar en portería / Llamar al llegar"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-amber-200 dark:border-slate-800 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D98F07]"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-3.5 px-4 rounded-xl font-bold text-white bg-gradient-to-r from-[#D98F07] via-amber-600 to-[#8C4E03] shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 flex items-center justify-center gap-2 transition-transform active:scale-[0.99]"
+            >
+              Continuar al Pago ({amount})
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </form>
+        )}
+
+        {/* STEP 2: PAYMENT METHOD SELECTION */}
+        {step === 'select_payment' && (
           <div className="space-y-6">
+            <div className="p-3.5 rounded-2xl bg-amber-50/70 dark:bg-slate-950 border border-amber-200/80 dark:border-slate-800 flex items-center justify-between text-xs">
+              <div>
+                <div className="font-bold text-[#401E01] dark:text-white">Envío a: {shippingData.fullName}</div>
+                <div className="text-slate-600 dark:text-slate-400">{shippingData.address}, {finalCityName} ({shippingData.department})</div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setStep('shipping')}
+                className="text-[#D98F07] underline font-bold hover:text-[#8C4E03]"
+              >
+                Editar datos
+              </button>
+            </div>
 
             {/* Payment Method Tabs */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -212,7 +468,6 @@ export const SmartCheckoutModal: React.FC<SmartCheckoutModalProps> = ({
               {method === 'nequi' && (
                 <div className="p-4 rounded-2xl bg-amber-50/60 dark:bg-slate-950 border border-amber-200/80 dark:border-slate-800 space-y-4">
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                    {/* Simulated QR */}
                     <div className="w-32 h-32 rounded-xl bg-white p-2 border border-amber-200 shadow-md flex flex-col items-center justify-center text-center">
                       <div className="w-full h-full bg-slate-900 rounded-lg flex items-center justify-center p-2 text-amber-300 text-[10px] font-mono leading-tight">
                         [QR Nequi beeWeb]
@@ -222,7 +477,7 @@ export const SmartCheckoutModal: React.FC<SmartCheckoutModalProps> = ({
                     </div>
 
                     <div className="flex-1 space-y-2 text-left w-full">
-                      <div className="text-xs font-semibold text-slate-500">Número de Nequi beeWeb:</div>
+                      <div className="text-xs font-semibold text-slate-500">Número Nequi beeWeb:</div>
                       <div className="flex items-center justify-between p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-800">
                         <span className="font-mono font-bold text-[#401E01] dark:text-white text-sm">{nequiNumber}</span>
                         <button
@@ -272,9 +527,7 @@ export const SmartCheckoutModal: React.FC<SmartCheckoutModalProps> = ({
                     className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-800 text-sm font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#D98F07]"
                   >
                     {COLOMBIAN_BANKS.map((bank) => (
-                      <option key={bank} value={bank}>
-                        {bank}
-                      </option>
+                      <option key={bank} value={bank}>{bank}</option>
                     ))}
                   </select>
                 </div>
@@ -343,7 +596,7 @@ export const SmartCheckoutModal: React.FC<SmartCheckoutModalProps> = ({
           </div>
         )}
 
-        {/* Step 2: Verification Simulation */}
+        {/* STEP 3: VERIFICATION SIMULATION */}
         {step === 'verifying' && (
           <div className="py-12 text-center space-y-6">
             <div className="w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-950 text-[#D98F07] mx-auto flex items-center justify-center animate-spin">
@@ -355,7 +608,7 @@ export const SmartCheckoutModal: React.FC<SmartCheckoutModalProps> = ({
                 Verificando Transacción en Tiempo Real
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                Conectando con la red de pagos para validar el pago de {amount}...
+                Validando el pago de {amount} y agendando envío a {shippingData.fullName}...
               </p>
             </div>
 
@@ -369,30 +622,42 @@ export const SmartCheckoutModal: React.FC<SmartCheckoutModalProps> = ({
           </div>
         )}
 
-        {/* Step 3: Success Confirmation & Receipt */}
+        {/* STEP 4: SUCCESS CONFIRMATION & RECEIPT */}
         {step === 'success' && (
-          <div className="py-8 text-center space-y-6">
+          <div className="py-6 text-center space-y-5">
             <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-500 mx-auto flex items-center justify-center animate-bounce">
               <CheckCircle2 className="w-10 h-10" />
             </div>
 
             <div>
               <span className="px-3 py-1 text-xs font-bold rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800">
-                Aprobado ⚡
+                Pago Confirmado & Despacho Agendado ⚡
               </span>
-              <h3 className="mt-3 text-2xl font-extrabold text-slate-900 dark:text-white">
-                ¡Pago Confirmado con Éxito!
+              <h3 className="mt-2 text-2xl font-extrabold text-slate-900 dark:text-white">
+                ¡Gracias por tu Compra en beeWeb!
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
-                Tu pedido para <span className="font-bold text-[#401E01] dark:text-white">{planName}</span> se está preparando en los apiarios de Tocancipá.
+                Tu pedido para <span className="font-bold text-[#401E01] dark:text-white">{planName}</span> se enviará desde nuestros apiarios de Tocancipá.
               </p>
             </div>
 
             {/* Receipt Summary Box */}
-            <div className="p-4 rounded-2xl bg-amber-50/60 dark:bg-slate-950 border border-amber-200/80 dark:border-slate-800 text-left text-xs space-y-2 max-w-sm mx-auto">
+            <div className="p-4 rounded-2xl bg-amber-50/70 dark:bg-slate-950 border border-amber-200/80 dark:border-slate-800 text-left text-xs space-y-2 max-w-md mx-auto">
               <div className="flex justify-between border-b border-amber-200/60 dark:border-slate-800 pb-2">
                 <span className="text-slate-500">ID de Referencia:</span>
                 <span className="font-mono font-bold text-[#401E01] dark:text-white">BEEWEB-{Math.floor(100000 + Math.random() * 900000)}</span>
+              </div>
+              <div className="flex justify-between border-b border-amber-200/60 dark:border-slate-800 pb-2">
+                <span className="text-slate-500">Cliente:</span>
+                <span className="font-bold text-slate-900 dark:text-white">{shippingData.fullName}</span>
+              </div>
+              <div className="flex justify-between border-b border-amber-200/60 dark:border-slate-800 pb-2">
+                <span className="text-slate-500">Dirección de Despacho:</span>
+                <span className="font-semibold text-slate-800 dark:text-slate-200 text-right">{shippingData.address}, {finalCityName} ({shippingData.department})</span>
+              </div>
+              <div className="flex justify-between border-b border-amber-200/60 dark:border-slate-800 pb-2">
+                <span className="text-slate-500">Tiempo de Entrega Estimado:</span>
+                <span className="font-bold text-[#D98F07]">{estimatedDays}</span>
               </div>
               <div className="flex justify-between border-b border-amber-200/60 dark:border-slate-800 pb-2">
                 <span className="text-slate-500">Monto Abonado:</span>
@@ -417,4 +682,5 @@ export const SmartCheckoutModal: React.FC<SmartCheckoutModalProps> = ({
     </div>
   );
 };
+
 
