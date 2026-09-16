@@ -8,10 +8,10 @@ export const Footer: React.FC = () => {
   return (
     <footer id="contacto" className="bg-slate-950 text-slate-400 py-16 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-slate-800">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-slate-800 text-center md:text-left">
           
           {/* Brand Info */}
-          <div className="md:col-span-1 space-y-4">
+          <div className="md:col-span-1 space-y-4 flex flex-col items-center md:items-start">
             <div className="flex items-center space-x-3">
               <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-400 p-0.5">
                 <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
@@ -22,7 +22,7 @@ export const Footer: React.FC = () => {
                 {logo.text}<span className="text-[#D98F07]">{logo.subtext}</span>
               </span>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
               Apicultura 100% artesanal y sostenible. Miel pura, polen, propóleo y jalea real cosechada directamente en Tocancipá, Cundinamarca.
             </p>
             <div className="flex items-center space-x-3 pt-2">
@@ -65,17 +65,17 @@ export const Footer: React.FC = () => {
           {/* Contact Direct */}
           <div>
             <h4 className="text-sm font-extrabold text-white uppercase tracking-wider mb-4">Contacto Directo</h4>
-            <div className="space-y-2.5 text-xs text-slate-300">
+            <div className="space-y-2.5 text-xs text-slate-300 flex flex-col items-center md:items-start">
               <div className="flex items-center space-x-2">
-                <MapPin className="w-4 h-4 text-[#D98F07]" />
+                <MapPin className="w-4 h-4 text-[#D98F07] flex-shrink-0" />
                 <span>{contact.address}</span>
               </div>
               <div className="flex items-center space-x-2">
-                <Phone className="w-4 h-4 text-[#D98F07]" />
+                <Phone className="w-4 h-4 text-[#D98F07] flex-shrink-0" />
                 <span>{contact.phone}</span>
               </div>
               <div className="flex items-center space-x-2">
-                <Mail className="w-4 h-4 text-[#D98F07]" />
+                <Mail className="w-4 h-4 text-[#D98F07] flex-shrink-0" />
                 <span>{contact.email}</span>
               </div>
             </div>
@@ -83,11 +83,11 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500">
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 text-center sm:text-left gap-4">
           <div>
             © 2026 beeWeb. Todos los derechos reservados. Tocancipá, Colombia.
           </div>
-          <div className="mt-4 sm:mt-0 flex items-center space-x-1">
+          <div className="flex items-center justify-center space-x-1">
             <span>Diseñado con</span>
             <Heart className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
             <span>para amantes de los productos naturales</span>
@@ -97,3 +97,4 @@ export const Footer: React.FC = () => {
     </footer>
   );
 };
+

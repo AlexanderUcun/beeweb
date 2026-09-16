@@ -16,16 +16,16 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick }) => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         {/* Animated Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100/80 dark:bg-amber-950/60 border border-amber-300/80 dark:border-amber-800 shadow-sm mb-8">
-          <span className="flex h-2 w-2 rounded-full bg-amber-500 animate-ping" />
-          <span className="text-xs sm:text-sm font-bold text-amber-900 dark:text-amber-300">
+        <div className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-amber-100/80 dark:bg-amber-950/60 border border-amber-300/80 dark:border-amber-800 shadow-sm mb-8 text-center max-w-full">
+          <span className="flex h-2 w-2 rounded-full bg-amber-500 animate-ping flex-shrink-0" />
+          <span className="text-xs sm:text-sm font-bold text-amber-900 dark:text-amber-300 text-center">
             🐝 100% Miel Cruda Pura & Cosecha Sostenible de Tocancipá
           </span>
-          <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+          <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
         </div>
 
         {/* Main Title */}
-        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-[#401E01] dark:text-white max-w-5xl mx-auto leading-[1.15]">
+        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-[#401E01] dark:text-white max-w-5xl mx-auto leading-[1.15] text-center">
           {companyName} —{' '}
           <span className="bg-gradient-to-r from-[#D98F07] via-[#8C4E03] to-[#D98F07] bg-clip-text text-transparent">
             {brandTagline}
@@ -33,7 +33,7 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick }) => {
         </h1>
 
         {/* Subtitle */}
-        <p className="mt-6 text-lg sm:text-xl text-slate-700 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed font-medium">
+        <p className="mt-6 text-lg sm:text-xl text-slate-700 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed font-medium text-center">
           Descubre miel pura de abejas, polen orgánico, jalea real y extractos de propóleo recolectados artesanalmente en nuestros apiarios libres de químicos.
         </p>
 
@@ -58,9 +58,9 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick }) => {
         </div>
 
         {/* Feature Badges Grid */}
-        <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto pt-8 border-t border-amber-200/60 dark:border-slate-800/80 text-left">
-          <div className="p-4 rounded-xl bg-amber-50/50 dark:bg-slate-900/50 backdrop-blur-sm border border-amber-200/60 dark:border-slate-800 flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-amber-100 dark:bg-amber-950/80 text-[#D98F07]">
+        <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto pt-8 border-t border-amber-200/60 dark:border-slate-800/80">
+          <div className="p-4 rounded-xl bg-amber-50/50 dark:bg-slate-900/50 backdrop-blur-sm border border-amber-200/60 dark:border-slate-800 flex items-center justify-center sm:justify-start gap-3 text-left">
+            <div className="p-2.5 rounded-lg bg-amber-100 dark:bg-amber-950/80 text-[#D98F07] flex-shrink-0">
               <Zap className="w-5 h-5" />
             </div>
             <div>
@@ -69,8 +69,8 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick }) => {
             </div>
           </div>
 
-          <div className="p-4 rounded-xl bg-amber-50/50 dark:bg-slate-900/50 backdrop-blur-sm border border-amber-200/60 dark:border-slate-800 flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-amber-100 dark:bg-amber-950/80 text-[#D98F07]">
+          <div className="p-4 rounded-xl bg-amber-50/50 dark:bg-slate-900/50 backdrop-blur-sm border border-amber-200/60 dark:border-slate-800 flex items-center justify-center sm:justify-start gap-3 text-left">
+            <div className="p-2.5 rounded-lg bg-amber-100 dark:bg-amber-950/80 text-[#D98F07] flex-shrink-0">
               <Globe className="w-5 h-5" />
             </div>
             <div>
@@ -79,8 +79,8 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick }) => {
             </div>
           </div>
 
-          <div className="p-4 rounded-xl bg-amber-50/50 dark:bg-slate-900/50 backdrop-blur-sm border border-amber-200/60 dark:border-slate-800 flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-amber-100 dark:bg-amber-950/80 text-[#D98F07]">
+          <div className="p-4 rounded-xl bg-amber-50/50 dark:bg-slate-900/50 backdrop-blur-sm border border-amber-200/60 dark:border-slate-800 flex items-center justify-center sm:justify-start gap-3 text-left">
+            <div className="p-2.5 rounded-lg bg-amber-100 dark:bg-amber-950/80 text-[#D98F07] flex-shrink-0">
               <Heart className="w-5 h-5" />
             </div>
             <div>
@@ -89,8 +89,8 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick }) => {
             </div>
           </div>
 
-          <div className="p-4 rounded-xl bg-amber-50/50 dark:bg-slate-900/50 backdrop-blur-sm border border-amber-200/60 dark:border-slate-800 flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-amber-100 dark:bg-amber-950/80 text-[#D98F07]">
+          <div className="p-4 rounded-xl bg-amber-50/50 dark:bg-slate-900/50 backdrop-blur-sm border border-amber-200/60 dark:border-slate-800 flex items-center justify-center sm:justify-start gap-3 text-left">
+            <div className="p-2.5 rounded-lg bg-amber-100 dark:bg-amber-950/80 text-[#D98F07] flex-shrink-0">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
@@ -103,3 +103,4 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick }) => {
     </section>
   );
 };
+
