@@ -636,7 +636,7 @@ export const SmartCheckoutModal: React.FC<SmartCheckoutModalProps> = ({
               <h3 className="mt-2 text-2xl font-extrabold text-slate-900 dark:text-white">
                 ¡Gracias por tu Compra en beeWeb!
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-2 max-w-md mx-auto text-center leading-relaxed [text-wrap:balance]">
                 Tu pedido para <span className="font-bold text-[#401E01] dark:text-white">{planName}</span> se enviará desde nuestros apiarios de Tocancipá.
               </p>
             </div>

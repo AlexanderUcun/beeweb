@@ -17,7 +17,10 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         {/* Animated Badge */}
         <div className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-amber-100/80 dark:bg-amber-950/60 border border-amber-300/80 dark:border-amber-800 shadow-sm mb-8 text-center max-w-full">
-          <span className="flex h-2 w-2 rounded-full bg-amber-500 animate-ping flex-shrink-0" />
+          <span className="relative flex h-2 w-2 flex-shrink-0">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+          </span>
           <span className="text-xs sm:text-sm font-bold text-amber-900 dark:text-amber-300 text-center">
             🐝 100% Miel Cruda Pura & Cosecha Sostenible de Tocancipá
           </span>
@@ -25,7 +28,7 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick }) => {
         </div>
 
         {/* Main Title */}
-        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-[#401E01] dark:text-white max-w-5xl mx-auto leading-[1.15] text-center">
+        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-[#401E01] dark:text-white max-w-5xl mx-auto leading-[1.15] text-center [text-wrap:balance]">
           {companyName} —{' '}
           <span className="bg-gradient-to-r from-[#D98F07] via-[#8C4E03] to-[#D98F07] bg-clip-text text-transparent">
             {brandTagline}
