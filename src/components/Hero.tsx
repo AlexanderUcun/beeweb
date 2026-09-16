@@ -27,18 +27,21 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick }) => {
           <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
         </div>
 
-        {/* Main Title */}
-        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-[#401E01] dark:text-white max-w-5xl mx-auto leading-[1.15] text-center [text-wrap:balance]">
-          {companyName} —{' '}
-          <span className="bg-gradient-to-r from-[#D98F07] via-[#8C4E03] to-[#D98F07] bg-clip-text text-transparent">
-            {brandTagline}
-          </span>
-        </h1>
+        {/* Main Title + Subtitle — wrapped in shared container for unified centering */}
+        <div className="max-w-3xl mx-auto text-center">
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-[#401E01] dark:text-white leading-[1.15] [text-wrap:balance]">
+            {companyName} —{' '}
+            <span className="bg-gradient-to-r from-[#D98F07] via-[#8C4E03] to-[#D98F07] bg-clip-text text-transparent">
+              {brandTagline}
+            </span>
+          </h1>
 
-        {/* Subtitle */}
-        <p className="mt-6 text-lg sm:text-xl text-slate-700 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed font-medium text-center">
-          Descubre miel pura de abejas, polen orgánico, jalea real y extractos de propóleo recolectados artesanalmente en nuestros apiarios libres de químicos.
-        </p>
+          {/* Subtitle */}
+          <p className="mt-6 text-base sm:text-lg text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+            Descubre miel pura de abejas, polen orgánico, jalea real y extractos de propóleo
+            recolectados artesanalmente en nuestros apiarios libres de químicos.
+          </p>
+        </div>
 
         {/* Action Buttons */}
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
